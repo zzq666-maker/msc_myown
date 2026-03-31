@@ -4,6 +4,8 @@ import scipy.io
 from sklearn.preprocessing import OneHotEncoder
 from copy import deepcopy
 
+from local_dataset import balanced_subject_records
+
 def segmentar_senales(db, labels):
     """
     Divide las señales EEG en segmentos de 512 instantes con un traslape del 50%.
@@ -41,15 +43,11 @@ def segmentar_senales(db, labels):
 
 def get_segmented_data():
     """
-    Se tiene que agregar en kaggle la base de datos
+    Load the locally balanced EEG dataset using deterministic subject selection.
     """
-    ruta_carpeta_TDAH = '/kaggle/input/ieee-tdah-control-database/ieee/ADHD_group'  
-    ruta_carpeta_control = '/kaggle/input/ieee-tdah-control-database/ieee/Control_group'  
-    
-    # Nombre de cada sujeto
-    sujetos_TDAH = [archivo[:-4] for archivo in os.listdir(ruta_carpeta_TDAH) if archivo.endswith('.mat')]
-    sujetos_TDAH.pop()
-    sujetos_control = [archivo[:-4] for archivo in os.listdir(ruta_carpeta_control) if archivo.endswith('.mat')]
+    sujetos_control_records, sujetos_TDAH_records, _ = balanced_subject_records(seed=42)
+    sujetos_TDAH = [subject_id for subject_id, _ in sujetos_TDAH_records]
+    sujetos_control = [subject_id for subject_id, _ in sujetos_control_records]
     
     diagnostico = {}
     
@@ -62,9 +60,7 @@ def get_segmented_data():
     # organizamos los datos de los sujetos con TDAH en un diccionario
     eeg_tdah = {}
     
-    for i in range(len(sujetos_TDAH)):
-        sbj = sujetos_TDAH[i]
-        mat_file_path = ruta_carpeta_TDAH+'/'+sbj+'.mat'
+    for sbj, mat_file_path in sujetos_TDAH_records:
         data = scipy.io.loadmat(mat_file_path)
         columna = list(data.keys())[-1]
         eeg_tdah[sbj] = data[columna].T
@@ -72,9 +68,7 @@ def get_segmented_data():
     # organizamos los datos de los sujetos de control en un diccionario
     eeg_control = {}
     
-    for i in range(len(sujetos_control)):
-        sbj = sujetos_control[i]
-        mat_file_path = ruta_carpeta_control+'/'+sbj+'.mat'
+    for sbj, mat_file_path in sujetos_control_records:
         data = scipy.io.loadmat(mat_file_path)
         columna = list(data.keys())[-1]
         eeg_control[sbj] = data[columna].T
