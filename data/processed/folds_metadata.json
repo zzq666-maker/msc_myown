@@ -1,0 +1,50 @@
+{
+  "seed": 42,
+  "n_splits": 5,
+  "control_count": 60,
+  "adhd_count": 60,
+  "dropped_subject_for_balance": "v209",
+  "copied_raw_files": {
+    "adhd": 61,
+    "control": 60
+  },
+  "local_adhd_group_dir": "C:\\GRENet\\Msc_thesis\\data\\ieee\\ADHD_group",
+  "local_control_group_dir": "C:\\GRENet\\Msc_thesis\\data\\ieee\\Control_group",
+  "folds": [
+    {
+      "fold": 1,
+      "train_subjects": 96,
+      "test_subjects": 24,
+      "test_control": 12,
+      "test_adhd": 12
+    },
+    {
+      "fold": 2,
+      "train_subjects": 96,
+      "test_subjects": 24,
+      "test_control": 12,
+      "test_adhd": 12
+    },
+    {
+      "fold": 3,
+      "train_subjects": 96,
+      "test_subjects": 24,
+      "test_control": 12,
+      "test_adhd": 12
+    },
+    {
+      "fold": 4,
+      "train_subjects": 96,
+      "test_subjects": 24,
+      "test_control": 12,
+      "test_adhd": 12
+    },
+    {
+      "fold": 5,
+      "train_subjects": 96,
+      "test_subjects": 24,
+      "test_control": 12,
+      "test_adhd": 12
+    }
+  ]
+}
