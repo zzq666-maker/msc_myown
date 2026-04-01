@@ -1,21 +1,33 @@
+# Core Deep Learning Framework
 tensorflow==2.18.0
-keras==2.18.0
-keras-nlp
+keras-nlp>=0.8.0
+
+# Scientific Computing
 numpy==1.26.4
-scipy
-scikit-learn
+scipy>=1.13.0
+
+# Machine Learning
+scikit-learn>=1.5.0
 statsmodels==0.14.2
-pandas
-matplotlib
-seaborn
+xgboost==2.0.3
+lightgbm==4.3.0
+
+# Data Visualization
+pandas>=2.2.0
+matplotlib>=3.9.0
+seaborn>=0.13.0
+tf-keras-vis>=0.8.7
+
+# Jupyter Environment
 notebook==7.2.0
 jupyterlab==4.2.1
 ipykernel==6.29.4
-tqdm
-joblib
-xgboost==2.0.3
-lightgbm==4.3.0
-mne
-umap-learn
-tf-keras-vis
+
+# Utilities
+tqdm>=4.66.0
+joblib>=1.4.0
+
+# EEG Analysis (verify if used)
+mne>=1.7.0
+umap-learn>=0.5.0
 gcpds-visualizations==0.6
