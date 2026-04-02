@@ -15,3 +15,14 @@ Después de esto Bayes para sintonización de hiperparámetros de la propuesta
 
 
 PARA ESTA SEMANA TERMINAR PRUEBASSSS
+
+
+撰写实验框架
+-对比方法表
+-描述
+-超参数（Hiperparámetros 的缩写）
+借助 AI 撰写（引言与实验框架）
+-会议 / 会议论文
+-贝叶斯
+-连通性 :)（时间来得及的话）
+本周务必完成实验测试！！！
