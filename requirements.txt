@@ -1,4 +1,4 @@
-tensorflow==2.18.0
+tensorflow[and-cuda]==2.18.0
 keras==3.13.2
 keras-nlp==0.26.0
 numpy==1.26.4
