@@ -1,13 +1,12 @@
 import math
 from collections import defaultdict
 
-import keras
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import tensorflow as tf
-from keras import activations, initializers, layers, ops
-from keras_nlp.layers import TransformerEncoder
+from tensorflow import keras
+from tensorflow.keras import activations, initializers, layers
 from tensorflow.keras.constraints import max_norm
 from tensorflow.keras.layers import (
     Activation,
@@ -277,23 +276,6 @@ class JointRenyiEntropyLayer(tf.keras.layers.Layer):
         return cls(**config)
 
 
-class InspectableMultiHeadAttention(layers.MultiHeadAttention):
-    """
-    Extiende la MultiHeadAttention original de Keras para añadir
-    un método de inspección de pesos de proyección.
-    """
-
-    def get_projection_weights(self):
-        if not self.built:
-            raise ValueError("La capa no ha sido construida.")
-
-        weights_dict = {
-            "query": self._query_dense.kernel.numpy(),
-            "key": self._key_dense.kernel.numpy(),
-            "value": self._value_dense.kernel.numpy(),
-            "output": self._output_dense.kernel.numpy(),
-        }
-        return weights_dict
 
 
 @tf.keras.utils.register_keras_serializable()
@@ -322,12 +304,10 @@ class InspectableTransformerEncoder(Layer):
 
     def build(self, input_shape):
         hidden_dim = int(input_shape[-1])
-        key_dim = int(hidden_dim // self.num_heads)
 
-        self._self_attention_layer = InspectableMultiHeadAttention(
+        self._self_attention_layer = layers.MultiHeadAttention(
             num_heads=self.num_heads,
-            key_dim=key_dim,
-            value_dim=key_dim,
+            key_dim=int(hidden_dim // self.num_heads),
             dropout=self.dropout,
             name="self_attention_inspectable",
         )
@@ -344,13 +324,6 @@ class InspectableTransformerEncoder(Layer):
             epsilon=self.layer_norm_epsilon
         )
         self._feedforward_dropout = layers.Dropout(rate=self.dropout)
-
-        self._self_attention_layer.build(input_shape, input_shape, input_shape)
-        self._self_attention_layer_norm.build(input_shape)
-        self._feedforward_intermediate_dense.build(input_shape)
-        intermediate_shape = tf.TensorShape(input_shape[:-1]).concatenate(self.intermediate_dim)
-        self._feedforward_output_dense.build(intermediate_shape)
-        self._feedforward_layer_norm.build(input_shape)
 
         super().build(input_shape)
 
@@ -380,11 +353,6 @@ class InspectableTransformerEncoder(Layer):
         if self._last_attention_scores is None:
             raise ValueError("No se han calculado aún los attention scores. Haz un forward pass primero.")
         return self._last_attention_scores
-
-    def get_attention_weights(self):
-        if not self.built:
-            raise ValueError("La capa Encoder no ha sido construida.")
-        return self._self_attention_layer.get_projection_weights()
 
     def get_config(self):
         config = super().get_config()
