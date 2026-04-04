@@ -250,7 +250,8 @@ def get_segmented_data():
         columna = list(data.keys())[-1]
         eeg_control[sbj] = data[columna].T
     
-    db = eeg_control | eeg_tdah
+    db = {**eeg_control, **eeg_tdah}
+
     zeros = np.zeros(len(eeg_control))
     ones = np.ones(len(eeg_tdah))
     labels = np.hstack((zeros, ones))
