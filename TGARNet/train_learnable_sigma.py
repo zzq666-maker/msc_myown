@@ -78,7 +78,7 @@ def parse_args():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--delta", type=float, default=20.0)
     parser.add_argument("--num-kernels", type=int, default=3)
-    parser.add_argument("--kernel-sigmas", type=float, nargs="+", default=[0.5, 1.0, 2.0])
+    parser.add_argument("--kernel-sigmas", type=float, nargs="+", default=[5.0, 2.5, 1.25])
     parser.add_argument("--num-heads", type=int, default=2)
     parser.add_argument("--intermediate-dim", type=int, default=64)
     parser.add_argument("--norm-rate", type=float, default=0.1)

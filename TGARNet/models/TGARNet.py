@@ -40,25 +40,13 @@ class GaussianKernelLayer(Layer):
         self.sigma_min = float(sigma_min)
         self.sigma_max = float(sigma_max)
         self.eps = float(eps)
-        self.raw_sigma = None
 
     def build(self, input_shape):
-        clipped_init_sigma = min(max(self.init_sigma, self.sigma_min), self.sigma_max)
-        safe_init_sigma = max(clipped_init_sigma - self.eps, self.eps)
-        raw_sigma_init = float(np.log(np.expm1(safe_init_sigma)))
-
-        self.raw_sigma = self.add_weight(
-            name="raw_sigma",
-            shape=(),
-            initializer=tf.keras.initializers.Constant(raw_sigma_init),
-            trainable=True,
-        )
         super().build(input_shape)
 
     def get_sigma(self):
-        sigma = tf.nn.softplus(self.raw_sigma) + self.eps
-        sigma = tf.clip_by_value(sigma, self.sigma_min, self.sigma_max)
-        return sigma
+        sigma = min(max(self.init_sigma, self.sigma_min), self.sigma_max)
+        return tf.constant(sigma, dtype=tf.float32)
 
     def call(self, inputs):
         x = tf.cast(inputs, tf.float32)

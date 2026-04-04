@@ -57,7 +57,7 @@ def main():
         nb_classes=nb_classes,
         Chans=chans,
         Samples=samples,
-        kernel_sigmas=[0.5, 1.0, 2.0],
+        kernel_sigmas=[5.0, 2.5, 1.25],
     )
 
     # TGARNet model input shape is (batch, Chans, Samples)
@@ -105,12 +105,12 @@ def main():
     print("\n=== 5) Sigma values after training ===")
     trained_report = inspect_gaussian_sigmas(model)
 
-    print("\n=== 6) Sigma update check ===")
-    sigma_updated = False
+    print("\n=== 6) Fixed-sigma consistency check ===")
+    sigma_changed = False
     for before, after in zip(initial_report, trained_report):
         delta = after["current_sigma"] - before["current_sigma"]
         changed = abs(delta) > 1e-7
-        sigma_updated = sigma_updated or changed
+        sigma_changed = sigma_changed or changed
         print(
             f"{after['layer_name']}: "
             f"before={before['current_sigma']:.8f}, "
@@ -119,10 +119,10 @@ def main():
             f"updated={changed}"
         )
 
-    if not sigma_updated:
-        print("WARNING: No sigma value changed beyond tolerance. Check gradients/training setup.")
+    if sigma_changed:
+        print("WARNING: At least one fixed Gaussian sigma changed. Check the layer implementation.")
     else:
-        print("Sigma update check passed: at least one Gaussian sigma changed.")
+        print("Fixed-sigma check passed: all Gaussian sigmas stayed unchanged.")
 
     print("\n=== 7) Save and load smoke test ===")
     custom_objects = {
@@ -157,7 +157,7 @@ def main():
         inspect_gaussian_sigmas(model_loaded)
 
     print("\n=== Smoke test completed ===")
-    print("Validated: forward pass, training, sigma update, save, load, and post-load inference.")
+    print("Validated: forward pass, training, fixed sigma behavior, save, load, and post-load inference.")
 
 
 if __name__ == "__main__":
